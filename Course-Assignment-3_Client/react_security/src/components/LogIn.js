@@ -16,6 +16,7 @@ function LogIn(props) {
   const logout = (evt) => {
     console.log("LogIn - logout");
     evt.preventDefault();
+    props.updateHobbies([]); // resetting variables
     props.logout();
   };
 
@@ -29,11 +30,10 @@ function LogIn(props) {
       setPass(evt.target.value);
     }
   };
-
+  
   if (!props.loggedIn) {
     return (
       <div>
-        {/* <h2>Login</h2> */}
         <form onChange={onChange}>
           <button onClick={login}>Login</button>
           <input placeholder="User Name" id="username" />
@@ -44,7 +44,6 @@ function LogIn(props) {
   } else {
     return (
       <div>
-        {/* <h2>Logout</h2> */}
         <button onClick={logout}>Logout</button>
       </div>
     );

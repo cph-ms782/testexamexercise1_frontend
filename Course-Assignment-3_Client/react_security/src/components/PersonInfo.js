@@ -3,12 +3,12 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import NewContact from "./personinfo/NewContact.js";
 import ContactInfo from "./personinfo/ContactInfo.js";
 
-function PersonInfo({ loggedIn }) {
+function PersonInfo(props) {
 	console.log('PersonInfo');
-	console.log('loggedIn', loggedIn);
+	console.log('loggedIn', props.loggedIn);
 	return (
 		<div>
-			{loggedIn ?
+			{props.loggedIn ?
 				<Router>
 					<Switch>
 						<Route exact path="/newcontact">
