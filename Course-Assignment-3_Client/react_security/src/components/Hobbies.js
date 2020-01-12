@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Prompt } from 'react-router-dom';
 // import MAINURL from "../settings";
 import loginFacade from './loginFacade';
 import postNumbers from '../postNumbers.json';
@@ -11,9 +12,9 @@ function Hobbies(props) {
 
 	const emptyHobby = { hobbyID: 0, name: '', description: '' };
 	const [ hobby, setHobby ] = useState({ ...emptyHobby });
+	let [ isBlocking, setIsBlocking ] = useState(false);
 
 	const [ persons, setPersons ] = useState([]);
-	const [ hobbyID, setHobbyID ] = useState(0);
 	const [ hobbies, setHobbies ] = useState([]);
 	const [ personID, setPersonID ] = useState(0);
 	const [ email, setEmail ] = useState('');
@@ -36,6 +37,7 @@ function Hobbies(props) {
 		};
 		console.log('newHobby itemBody', itemBody);
 		props.apiFacade.addEditItem(itemBody, props.loggedIn, '/api/hobby/add', hobby.hobbyID);
+		setIsBlocking(false);
 		setHobby({ ...emptyHobby });
 		setTimeout(() => {
 			console.log('setTimeout firing');
@@ -52,6 +54,7 @@ function Hobbies(props) {
 		};
 		console.log('editHobby itemBody', itemBody);
 		props.apiFacade.addEditItem(itemBody, props.loggedIn, '/api/hobby/edit', hobby.hobbyID);
+		setIsBlocking(false);
 		setHobby({ ...emptyHobby });
 		setTimeout(() => {
 			console.log('setTimeout firing');
@@ -61,6 +64,7 @@ function Hobbies(props) {
 	const deleteHobby = (evt) => {
 		console.log('deleteHobby');
 		props.apiFacade.deleteItem(props.loggedIn, '/api/hobby/delete/' + hobby.hobbyID, hobby.hobbyID);
+		setIsBlocking(false);
 		setTimeout(() => {
 			console.log('setTimeout firing');
 			getHobbyData();
@@ -80,6 +84,7 @@ function Hobbies(props) {
 		};
 		console.log('newPerson itemBody', itemBody);
 		props.apiFacade.addEditItem(itemBody, props.loggedIn, '/api/person/add', personID);
+		setIsBlocking(false);
 		setTimeout(() => {
 			console.log('setTimeout firing');
 			getHobbyData();
@@ -100,6 +105,7 @@ function Hobbies(props) {
 		};
 		console.log('editPerson itemBody', itemBody);
 		props.apiFacade.addEditItem(itemBody, props.loggedIn, '/api/person/edit', personID);
+		setIsBlocking(false);
 		setTimeout(() => {
 			console.log('setTimeout firing');
 			getHobbyData();
@@ -109,6 +115,7 @@ function Hobbies(props) {
 	const deletePerson = (evt) => {
 		console.log('deletePerson');
 		props.apiFacade.deleteItem(props.loggedIn, '/api/person/delete/' + personID, personID);
+		setIsBlocking(false);
 		setTimeout(() => {
 			console.log('setTimeout firing');
 			getHobbyData();
@@ -121,9 +128,11 @@ function Hobbies(props) {
 		const newHobby = { ...hobby };
 		const target = evt.target;
 		const id = evt.target.id;
+		setIsBlocking(target.value.length > 0);
 		setHobby({ ...newHobby, [id]: target.value });
 		console.log('handleHobbyChange hobby', hobby);
 	};
+
 	const onChangePerson = (evt) => {
 		console.log('onChangePerson  ->', evt.target.id);
 		switch (evt.target.id) {
@@ -221,7 +230,12 @@ function Hobbies(props) {
 					</table>
 				</div>
 				<div>
-					<form>
+					<form className="form-horizontal">
+						<Prompt
+							when={isBlocking}
+							message={(location) =>
+								`You have unsaved work. Sure you want to go to ${location.pathname}?`}
+						/>
 						<div className="form-group">
 							<div className="col-sm-9">
 								<button onClick={newHobby}>New Hobby</button>
@@ -246,7 +260,12 @@ function Hobbies(props) {
 					</form>
 				</div>
 				<div>
-					<form>
+					<form className="form-horizontal">
+						<Prompt
+							when={isBlocking}
+							message={(location) =>
+								`You have unsaved work. Sure you want to go to ${location.pathname}?`}
+						/>
 						<div className="form-group">
 							<div className="col-sm-9">
 								<button onClick={editHobby}>Edit Hobby</button>
